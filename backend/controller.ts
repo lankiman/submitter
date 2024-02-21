@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 // import fs from "fs";
 import multer from "multer";
 import path from "path";
@@ -38,11 +38,7 @@ const upload = multer({
   }
 });
 
-const handleFileUpload = (req: Request, res: Response) => {
-  if (!req.file) {
-    console.log(req.file);
-    return res.status(400).json("please upload a file");
-  }
+const handleFileUpload = (req: Request, res: Response, next: NextFunction) => {
   upload.single("file")(req, res, (err: multer.MulterError | any) => {
     if (err instanceof multer.MulterError) {
       if (err.code === "LIMIT_FILE_SIZE") {
@@ -52,9 +48,18 @@ const handleFileUpload = (req: Request, res: Response) => {
     } else if (err) {
       return res.status(400).json({ error: err.message });
     }
-    console.log("upload sucessful");
-    res.status(200).json({ message: "upload successful", body: req.file });
+    next();
   });
 };
 
-export { handleFileUpload };
+const validateUploadStatus = (req: Request, res: Response) => {
+  if (!req.file) {
+    return res
+      .status(400)
+      .json({ error: "No file uploaded, please choose a file to upload" });
+  }
+  console.log("upload sucessful");
+  res.status(200).json({ message: "upload successful", body: req.file });
+};
+
+export { handleFileUpload, validateUploadStatus };

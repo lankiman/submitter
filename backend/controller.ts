@@ -22,16 +22,17 @@ const upload = multer({
     fileSize: 2 * 1024 * 1024 // 2MB limit
   },
 
-  fileFilter: (req, file, cb) => {
-    // Check file type and reject if not a .py file
+  fileFilter: (
+    req: Request,
+    file: Express.Multer.File,
+    cb: multer.FileFilterCallback
+  ) => {
     const fileExtension = path.extname(file.originalname).toLowerCase();
     if (fileExtension !== ".py") {
-      cb(null, false);
-      cb(new Error("Only .py files are allowed"));
+      return cb(new Error("Only .py files are allowed"));
     }
     if (!namePattern.test(file.originalname)) {
-      cb(null, false);
-      cb(new Error("Incorrect Naming Format"));
+      return cb(new Error("Incorrect Naming Format"));
     }
 
     cb(null, true);

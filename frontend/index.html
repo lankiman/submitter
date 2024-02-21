@@ -7,35 +7,18 @@
   </head>
   <body>
     <form
-      action="http://localhost:3000/api/submit/mechanical"
+      action="http://localhost:3000/api/submit/"
       enctype="multipart/form-data"
       method="post"
     >
-      <input id="file" type="file" name="file" />
-      <button id="button" type="submit">upload file</button>
+      <select name="department" id="select--input">
+        <option value="">Choose your department</option>
+        <option value="mechanical">Mechanical</option>
+        <option value="chemical">Chemical</option>
+      </select>
+      <input id="file--input" type="file" name="file" />
+      <button id="submit--button" type="submit">upload file</button>
     </form>
-    <script>
-      const form = document.querySelector("form");
-      const file = document.getElementById("file");
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        // const formData = new FormData(form);
-        const submitFile = async () => {
-          const response = await fetch(
-            "http://localhost:3000/api/submit/mechanical",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "file"
-              },
-              body: file.files[0]
-            }
-          );
-          const data = await response.json();
-          console.log(data);
-        };
-        submitFile();
-      });
-    </script>
+    <script defer type="module" src="./index.js"></script>
   </body>
 </html>

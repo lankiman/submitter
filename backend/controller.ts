@@ -28,8 +28,8 @@ const upload = multer({
     cb: multer.FileFilterCallback
   ) => {
     const fileExtension = path.extname(file.originalname).toLowerCase();
-    if (fileExtension !== ".py") {
-      return cb(new Error("Only .py files are allowed"));
+    if (fileExtension !== ".py" && file.mimetype.startsWith("/text")) {
+      return cb(new Error("Only text files with .py extensions are allowed"));
     }
     if (!namePattern.test(file.originalname)) {
       return cb(new Error("Incorrect Naming Format"));

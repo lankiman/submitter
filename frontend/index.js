@@ -1,8 +1,15 @@
 "use Strict";
 //globals
 const form = document.querySelector("form");
-const file = document.getElementById("file--input");
+const fileInput = document.getElementById("file--input");
 const selectInput = document.getElementById("select--input");
+const selectError = document.querySelector(".select--error");
+const dragDrop = document.getElementById("drag-drop");
+const chooseFileButton = document.querySelector(".choose-file--button");
+const chooseFileIcon = document.getElementById("cloud-upload--icon");
+
+//regex globals
+const namePattern = /^UG\/\d{2}\/\d{4}_[A-Za-z]+_[A-Za-z]+$/;
 
 //generic submsion function
 const submitFile = async (url, dept, file) => {
@@ -15,7 +22,35 @@ const submitFile = async (url, dept, file) => {
     console.log(data);
   } catch (error) {}
 };
-//
+
+//drag and drop functionality
+dragDrop.addEventListener("dragover", (e) => {
+  e.preventDefault();
+});
+
+dragDrop.addEventListener("drop", (e) => {
+  e.preventDefault();
+  console.log("dropped");
+});
+
+fileInput.addEventListener("change", () => {
+  console.log(fileInput.files);
+});
+
+selectInput.addEventListener("change", () => {
+  if (selectInput.value != "") {
+    selectError.style.display = "none";
+    selectInput.style.borderColor = "initial";
+  }
+});
+
+//custom input functionality
+chooseFileButton.addEventListener("click", () => {
+  fileInput.click();
+});
+chooseFileIcon.addEventListener("click", () => {
+  fileInput.click();
+});
 
 //form submision and validation
 form.addEventListener("submit", (e) => {
@@ -25,13 +60,19 @@ form.addEventListener("submit", (e) => {
   const submissionPath = form.action;
 
   if (selectInput.value == "") {
-    alert("please choose a deparment");
+    selectError.style.display = "block";
+    selectInput.style.borderColor = "red";
     return;
   }
-  if (!file.files[0]) {
+  if (!fileInput.files[0]) {
     alert("please choose a file");
     return;
   }
-  formData.append("file", file.files[0]);
+  if (!namePattern.test(fileInput.files[0].name)) {
+    alert("Incorrect Naming Format");
+    return;
+  }
+
+  formData.append("file", fileInput.files[0]);
   submitFile(submissionPath, selectInput.value, formData);
 });

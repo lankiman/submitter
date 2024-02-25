@@ -1,0 +1,148 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: linear-gradient(to bottom right, #274886, #0c3152);
+  overflow: auto;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100dvh;
+  padding: 2rem;
+}
+
+h1 {
+  padding: 2rem;
+  text-align: center;
+  font-size: x-large;
+  font-weight: bolder;
+  color: white;
+}
+h4 {
+  padding-bottom: 1rem;
+  text-align: center;
+}
+
+hr {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+.upload--container {
+  background-color: white;
+  min-height: fit-content;
+  min-width: fit-content;
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
+.drag--drop {
+  height: 7rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: solid;
+  padding: 1rem;
+  border: 2px dashed #274886;
+  border-radius: 1rem;
+  margin-top: 2rem;
+  justify-content: center;
+}
+.drag--drop p {
+  font-weight: bold;
+  font-size: smaller;
+  text-align: center;
+}
+.accepted-files--p {
+  color: red;
+  padding-top: 10px;
+  font-size: small;
+  font-weight: bold;
+}
+.naming-format--p {
+  color: #333;
+  font-size: small;
+  font-weight: bold;
+}
+
+#file--input {
+  display: none;
+}
+.choose-file--button {
+  display: inline;
+  background: none;
+  cursor: pointer;
+  border: none;
+  font-weight: inherit;
+  font-size: inherit;
+  color: #274886;
+  text-decoration: underline;
+}
+.submit--button {
+  text-align: center;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  display: inline;
+  width: 100%;
+  border: none;
+  color: white;
+  font-weight: bolder;
+  margin-top: 2rem;
+  border-radius: 10px;
+  background-color: #274886;
+}
+.submit--button:hover {
+  background-color: black;
+}
+/* Reset default styles */
+select {
+  border: 1px solid #ccc;
+  padding: 8px;
+  font-size: 14px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+}
+
+/* Custom styles for when select is hovered */
+select:hover {
+  border-color: #999;
+}
+
+/* Custom styles for when select is focused */
+select:focus {
+  outline: none;
+  border-color: #00f;
+}
+svg {
+  cursor: pointer;
+}
+svg:hover {
+  stroke: #274886;
+}
+.select--error {
+  display: none;
+  color: red;
+  font-size: small;
+  font-weight: bold;
+  padding: 2px;
+}
+.files--list {
+  padding: 10px;
+}
+h5 {
+  font-size: medium;
+  font-weight: bold;
+  color: #274886;
+}

@@ -14,7 +14,7 @@ const errorList = document.querySelectorAll(".error");
 
 //regex globals
 const namePattern =
-  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+_[1-4]\.(py|mp4)$/;
+  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+_[1-9]\.(py|mp4)$/;
 
 let selectedFiles = [];
 //generic submsion function
@@ -56,14 +56,12 @@ fileInput.addEventListener("change", () => {
   emptyError.style.display = "none";
   namingError.style.display = "none";
 
-  for (let file of files) {
-    selectedFiles.push(file);
-  }
-  selectedFiles.forEach((file) => {
-    console.log(file);
+  for (let inputFile of files) {
+    // Add the file to the selectedFiles array
+
     const li = document.createElement("li");
     li.innerHTML = `
-    <p>${file.name}</p>
+    <p>${inputFile.name}</p>
     <button class="del--button" type="button">
       <svg
         data-slot="icon"
@@ -81,8 +79,11 @@ fileInput.addEventListener("change", () => {
         ></path>
       </svg></button
     >`;
+
+    console.log(selectedFiles);
+    selectedFiles.push(inputFile);
     filesList.appendChild(li);
-  });
+  }
   let delButton = document.querySelectorAll(".del--button");
   delButton.forEach((button) => {
     button.addEventListener("click", () => {
@@ -96,6 +97,7 @@ fileInput.addEventListener("change", () => {
       filesList.removeChild(button.parentElement);
     });
   });
+  console.log(selectedFiles);
 });
 
 selectInput.addEventListener("change", () => {

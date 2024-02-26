@@ -38,7 +38,7 @@
             <option value="marine">Marine</option>
             <option value="agricultural">Agric/Environmental</option>
           </select>
-          <p class="select--error">Please Choose a Department</p>
+          <p class="error" id="select--error">Please Choose a Department</p>
 
           <div class="drag--drop" id="drag-drop" draggable="true">
             <input
@@ -81,9 +81,15 @@
             Naming Format: <br />
             Refer to submission instructions
           </p>
-          <div id="files--list" class="files--list">
-            <h5>Files</h5>
-            <ul></ul>
+          <p class="error" id="naming--error">
+            Some Files are Named incorrectly
+          </p>
+          <p class="error" id="empty--error">
+            File list Empty, Plese choose files to upload
+          </p>
+          <div id="files--container" class="files--container">
+            <h5>Source Files</h5>
+            <ul id="files--list" class="files--list"></ul>
           </div>
           <button class="submit--button" id="submit--button" type="submit">
             Submit Assignment

@@ -3,14 +3,20 @@
 const form = document.querySelector("form");
 const fileInput = document.getElementById("file--input");
 const selectInput = document.getElementById("select--input");
-const selectError = document.querySelector(".select--error");
+const selectError = document.getElementById("select--error");
+const namingError = document.getElementById("naming--error");
+const emptyError = document.getElementById("empty--error");
 const dragDrop = document.getElementById("drag-drop");
 const chooseFileButton = document.querySelector(".choose-file--button");
 const chooseFileIcon = document.getElementById("cloud-upload--icon");
+const filesList = document.getElementById("files--list");
+const errorList = document.querySelectorAll(".error");
 
 //regex globals
-const namePattern = /^UG\/\d{2}\/\d{4}_[A-Za-z]+_[A-Za-z]+$/;
+const namePattern =
+  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+_[1-4]\.(py|mp4)$/;
 
+let selectedFiles = [];
 //generic submsion function
 const submitFile = async (url, dept, file) => {
   try {
@@ -30,11 +36,66 @@ dragDrop.addEventListener("dragover", (e) => {
 
 dragDrop.addEventListener("drop", (e) => {
   e.preventDefault();
-  console.log("dropped");
+
+  for (let file of e.dataTransfer.files) {
+    const fileType = file.type;
+    if (fileType !== "text/x-python" && fileType !== "video/mp4") {
+      alert("Only Python (.py) and MP4 files are allowed.");
+      return; // Stop further processing if an invalid file is found
+    }
+  }
+
+  // Trigger the change event with valid files
+  fileInput.files = e.dataTransfer.files;
+  fileInput.dispatchEvent(new Event("change"));
 });
 
 fileInput.addEventListener("change", () => {
-  console.log(fileInput.files);
+  const files = fileInput.files;
+
+  emptyError.style.display = "none";
+  namingError.style.display = "none";
+
+  for (let file of files) {
+    selectedFiles.push(file);
+  }
+  selectedFiles.forEach((file) => {
+    console.log(file);
+    const li = document.createElement("li");
+    li.innerHTML = `
+    <p>${file.name}</p>
+    <button class="del--button" type="button">
+      <svg
+        data-slot="icon"
+        fill="none"
+        stroke-width="1.5"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+        ></path>
+      </svg></button
+    >`;
+    filesList.appendChild(li);
+  });
+  let delButton = document.querySelectorAll(".del--button");
+  delButton.forEach((button) => {
+    button.addEventListener("click", () => {
+      const fileName = button.parentElement.innerText;
+      const fileIndex = selectedFiles.findIndex(
+        (file) => file.name === fileName
+      );
+      if (fileIndex !== -1) {
+        selectedFiles.splice(fileIndex, 1);
+      }
+      filesList.removeChild(button.parentElement);
+    });
+  });
 });
 
 selectInput.addEventListener("change", () => {
@@ -58,21 +119,33 @@ form.addEventListener("submit", (e) => {
   const formData = new FormData();
   const form = e.currentTarget;
   const submissionPath = form.action;
+  let isValid = true;
 
   if (selectInput.value == "") {
     selectError.style.display = "block";
     selectInput.style.borderColor = "red";
-    return;
-  }
-  if (!fileInput.files[0]) {
-    alert("please choose a file");
-    return;
-  }
-  if (!namePattern.test(fileInput.files[0].name)) {
-    alert("Incorrect Naming Format");
-    return;
+    isValid = false;
   }
 
-  formData.append("file", fileInput.files[0]);
-  submitFile(submissionPath, selectInput.value, formData);
+  if (selectedFiles.length == 0) {
+    emptyError.style.display = "block";
+    isValid = false;
+  }
+
+  if (selectedFiles.length > 0) {
+    selectedFiles.forEach((file) => {
+      if (!namePattern.test(file.name)) {
+        namingError.style.display = "block";
+        isValid = false;
+      }
+    });
+  }
+
+  console.log(selectedFiles);
+  if (isValid) {
+    selectedFiles.forEach((file, index) => {
+      formData.append(`file`, file);
+    });
+    submitFile(submissionPath, selectInput.value, formData);
+  }
 });

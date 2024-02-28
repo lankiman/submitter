@@ -11,6 +11,8 @@ const chooseFileButton = document.querySelector(".choose-file--button");
 const chooseFileIcon = document.getElementById("cloud-upload--icon");
 const filesList = document.getElementById("files--list");
 const errorList = document.querySelectorAll(".error");
+const successStatus = document.getElementById("success--container");
+const failStatus = document.getElementById("fail--container");
 
 //regex globals
 const namePattern =
@@ -18,6 +20,7 @@ const namePattern =
 
 let selectedFiles = [];
 //generic submsion function
+
 const submitFile = async (url, dept, file) => {
   try {
     const response = await fetch(url + `${dept}`, {
@@ -26,6 +29,21 @@ const submitFile = async (url, dept, file) => {
     });
     const data = await response.json();
     console.log(data);
+    if (data.error) {
+      failStatus.style.display = "flex";
+      submisionSuccessfull = false;
+      setTimeout(() => {
+        failStatus.style.display = "none";
+      }, 3000);
+    } else {
+      successStatus.style.display = "flex";
+      form.reset();
+      filesList.replaceChildren();
+      selectedFiles.splice(0);
+      setTimeout(() => {
+        successStatus.style.display = "none";
+      }, 3000);
+    }
   } catch (error) {}
 };
 
@@ -143,11 +161,11 @@ form.addEventListener("submit", (e) => {
     });
   }
 
-  console.log(selectedFiles);
   if (isValid) {
     selectedFiles.forEach((file, index) => {
       formData.append(`file`, file);
     });
     submitFile(submissionPath, selectInput.value, formData);
   }
+  console.log(selectedFiles);
 });

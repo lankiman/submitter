@@ -166,3 +166,21 @@ h5 {
   font-weight: bold;
   padding: 2px;
 }
+.status--container {
+  width: 20rem;
+  margin-left: auto;
+  background-color: red;
+  margin-right: 2rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+}
+.success--container,
+.fail--container {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  background-color: green;
+}
+.success--container p {
+  width: fit-content;
+}

@@ -31,18 +31,18 @@ const submitFile = async (url, dept, file) => {
     console.log(data);
     if (data.error) {
       failStatus.style.display = "flex";
-      submisionSuccessfull = false;
-      setTimeout(() => {
+      failStatus.addEventListener("animationend", () => {
         failStatus.style.display = "none";
-      }, 3000);
+      });
     } else {
       successStatus.style.display = "flex";
       form.reset();
       filesList.replaceChildren();
       selectedFiles.splice(0);
-      setTimeout(() => {
+
+      successStatus.addEventListener("animationend", () => {
         successStatus.style.display = "none";
-      }, 3000);
+      });
     }
   } catch (error) {}
 };

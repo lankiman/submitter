@@ -179,9 +179,11 @@ h5 {
 }
 .success--container,
 .fail--container {
+  animation-name: fader;
+  animation-duration: 5s;
   display: none;
+  flex-direction: column;
   width: 100%;
-  align-items: center;
   background-color: whitesmoke;
 }
 .success--container svg {
@@ -201,6 +203,42 @@ h5 {
   font-size: x-large;
   font-weight: bolder;
   color: red;
+}
+
+.status--wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.line {
+  width: 0;
+  height: 4px;
+  animation-name: loader;
+  animation-duration: 5s;
+}
+.success--container .line {
+  background-color: green;
+}
+.fail--container .line {
+  background-color: red;
+}
+
+@keyframes loader {
+  from {
+    width: 0px;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes fader {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @media screen and (max-width: 1150px) {

@@ -16,7 +16,7 @@ const failStatus = document.getElementById("fail--container");
 
 //regex globals
 const namePattern =
-  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+_[1-9]\.(py|mp4)$/;
+  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+_(([1-9]\.py)|(\.mp4))$/;
 
 let selectedFiles = [];
 //generic submsion function

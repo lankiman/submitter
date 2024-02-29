@@ -187,7 +187,7 @@ h5 {
 .success--container,
 .fail--container {
   animation-name: fader;
-  animation-duration: 5s;
+  animation-duration: 6s;
   display: none;
   flex-direction: column;
   width: 100%;
@@ -221,7 +221,7 @@ h5 {
   width: 0;
   height: 4px;
   animation-name: loader;
-  animation-duration: 5s;
+  animation-duration: 6s;
 }
 .success--container .line {
   background-color: green;

@@ -98,7 +98,6 @@ fileInput.addEventListener("change", () => {
       </svg></button
     >`;
 
-    console.log(selectedFiles);
     selectedFiles.push(inputFile);
     filesList.appendChild(li);
     fileInput.value = "";
@@ -117,8 +116,6 @@ fileInput.addEventListener("change", () => {
       }
     });
   });
-
-  console.log(selectedFiles);
 });
 
 selectInput.addEventListener("change", () => {
@@ -170,5 +167,4 @@ form.addEventListener("submit", (e) => {
     });
     submitFile(submissionPath, selectInput.value, formData);
   }
-  console.log(selectedFiles);
 });

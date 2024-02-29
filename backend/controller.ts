@@ -5,7 +5,7 @@ import path from "path";
 
 const folderPath: string = "../../../submissions/";
 const namePattern =
-  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+_([1-9]\.py|.mp4)$/;
+  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+(_[1-9]\.py|\.mp4)$/;
 
 const storage = multer.diskStorage({
   destination: function (req: Request, file, cb) {
@@ -26,16 +26,29 @@ const upload = multer({
     cb: multer.FileFilterCallback
   ) => {
     const fileExtension = path.extname(file.originalname).toLowerCase();
-    if (
-      fileExtension !== (".py" || ".mp4") &&
-      file.mimetype.startsWith("/text" || "/video")
-    ) {
+    const validExtensions = [".py", ".mp4"];
+    if (!validExtensions.includes(fileExtension)) {
       return cb(
         new Error(
           "Only text or video files with .py or .mp4 extensions are allowed"
         )
       );
     }
+    switch (fileExtension) {
+      case ".py":
+        if (!file.mimetype.startsWith("/text")) {
+          return cb(new Error("Files with .py Extension must a Text File"));
+        }
+        break;
+      case ".mp4":
+        if (!file.mimetype.startsWith("/text")) {
+          return cb(new Error("Files with .mp4 Extension must a Video File"));
+        }
+        break;
+      default:
+        break;
+    }
+
     if (!namePattern.test(file.originalname)) {
       return cb(new Error("Incorrect Naming Format"));
     }

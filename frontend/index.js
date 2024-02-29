@@ -79,7 +79,7 @@ fileInput.addEventListener("change", () => {
 
     const li = document.createElement("li");
     li.innerHTML = `
-    <p>${inputFile.name}</p>
+    <p class="file--name">${inputFile.name}</p>
     <button class="del--button" type="button">
       <svg
         data-slot="icon"
@@ -101,20 +101,23 @@ fileInput.addEventListener("change", () => {
     console.log(selectedFiles);
     selectedFiles.push(inputFile);
     filesList.appendChild(li);
+    fileInput.value = "";
   }
   let delButton = document.querySelectorAll(".del--button");
   delButton.forEach((button) => {
     button.addEventListener("click", () => {
-      const fileName = button.parentElement.innerText;
+      const listItem = button.parentElement;
+      const fileName = listItem.querySelector(".file--name").textContent;
       const fileIndex = selectedFiles.findIndex(
         (file) => file.name === fileName
       );
       if (fileIndex !== -1) {
         selectedFiles.splice(fileIndex, 1);
+        listItem.remove();
       }
-      filesList.removeChild(button.parentElement);
     });
   });
+
   console.log(selectedFiles);
 });
 

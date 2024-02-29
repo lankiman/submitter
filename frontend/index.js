@@ -34,6 +34,7 @@ const submitFile = async (url, dept, file) => {
       failStatus.addEventListener("animationend", () => {
         failStatus.style.display = "none";
       });
+      alert(data.error);
     } else {
       successStatus.style.display = "flex";
       form.reset();

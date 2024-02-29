@@ -36,14 +36,18 @@ const upload = multer({
     }
     switch (fileExtension) {
       case ".py":
-        if (!file.mimetype.startsWith("/text")) {
-          return cb(new Error("Files with .py Extension must a Text File"));
-        }
+        // if (file.mimetype.startsWith("/text")) {
+        //   return cb(new Error("Files with .py extension must be a  Text File"));
+        // }
+        console.log(file.mimetype);
         break;
       case ".mp4":
-        if (!file.mimetype.startsWith("/text")) {
-          return cb(new Error("Files with .mp4 Extension must a Video File"));
-        }
+        // if (file.mimetype.startsWith("/video")) {
+        //   return cb(
+        //     new Error("Files with .mp4 extension must be a Video File")
+        //   );
+        // }
+        console.log(file.mimetype);
         break;
       default:
         break;

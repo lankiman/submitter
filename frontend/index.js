@@ -13,28 +13,32 @@ const filesList = document.getElementById("files--list");
 const errorList = document.querySelectorAll(".error");
 const successStatus = document.getElementById("success--container");
 const failStatus = document.getElementById("fail--container");
+const loadingOverlay = document.querySelector(".loading--overlay");
 
 //regex globals
 const namePattern =
   /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+(_[1-9]\.py|\.mp4)$/;
 
 let selectedFiles = [];
+let loading = false;
 //generic submsion function
 
 const submitFile = async (url, dept, file) => {
+  loading = true;
   try {
     const response = await fetch(url + `${dept}`, {
       method: "POST",
       body: file
     });
     const data = await response.json();
-    console.log(data);
+    if (data) {
+      loading = false;
+    }
     if (data.error) {
       failStatus.style.display = "flex";
       failStatus.addEventListener("animationend", () => {
         failStatus.style.display = "none";
       });
-      alert(data.error);
     } else {
       successStatus.style.display = "flex";
       form.reset();

@@ -20,11 +20,11 @@ const namePattern =
   /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+(_[1-9]\.py|\.mp4)$/;
 
 let selectedFiles = [];
-let loading = false;
+
 //generic submsion function
 
 const submitFile = async (url, dept, file) => {
-  loading = true;
+  loadingOverlay.style.display = "flex";
   try {
     const response = await fetch(url + `${dept}`, {
       method: "POST",
@@ -32,7 +32,7 @@ const submitFile = async (url, dept, file) => {
     });
     const data = await response.json();
     if (data) {
-      loading = false;
+      loadingOverlay.style.display = "none";
     }
     if (data.error) {
       failStatus.style.display = "flex";

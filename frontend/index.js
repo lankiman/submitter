@@ -13,6 +13,7 @@ const filesList = document.getElementById("files--list");
 const errorList = document.querySelectorAll(".error");
 const successStatus = document.getElementById("success--container");
 const failStatus = document.getElementById("fail--container");
+const statusContainer = document.getElementById("status--container");
 const loadingOverlay = document.querySelector(".loading--overlay");
 
 const hostname = window.location.hostname;
@@ -35,11 +36,13 @@ const submitFile = async (url, dept, file) => {
     const data = await response.json();
     if (data) {
       loadingOverlay.style.display = "none";
+      statusContainer.style.display = "flex";
     }
     if (data.error) {
       failStatus.style.display = "flex";
       failStatus.addEventListener("animationend", () => {
         failStatus.style.display = "none";
+        statusContainer.style.display = "none";
       });
     } else {
       successStatus.style.display = "flex";
@@ -49,6 +52,7 @@ const submitFile = async (url, dept, file) => {
 
       successStatus.addEventListener("animationend", () => {
         successStatus.style.display = "none";
+        statusContainer.style.display = "none";
       });
     }
   } catch (error) {}

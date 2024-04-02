@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: "*", // Allow requests only from this origin
-    methods: ["POST"] // Allow only GET and POST requests
+    methods: ["POST"], // Allow only GET and POST requests
   })
 );
 

@@ -3,9 +3,9 @@ import { NextFunction, Request, Response } from "express";
 import multer from "multer";
 import path from "path";
 
-const folderPath: string = "../../../submissions/";
+const folderPath: string = "../../submissions/";
 const namePattern =
-  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+(_[1-9]\.py|\.mp4)$/;
+  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+(?:_[A-Za-z]+)?_[1-9]\.(py|mp4)$/;
 
 const storage = multer.diskStorage({
   destination: function (req: Request, file, cb) {
@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req: Request, file, cb) {
     cb(null, file.originalname);
-  }
+  },
 });
 
 const upload = multer({
@@ -58,7 +58,7 @@ const upload = multer({
     }
 
     cb(null, true);
-  }
+  },
 });
 
 const handleFileUpload = (req: Request, res: Response, next: NextFunction) => {

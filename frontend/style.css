@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+  /* font-family: "Poppins", sans-serif; */
 }
 
 body {
@@ -230,14 +230,29 @@ h5 {
   background-color: red;
 }
 
-.loading--overlay {
+/* .loading--overlay {
   width: 100%;
-  height: 100%;
+  height: 100vh;
+  overflow: auto;
   z-index: 9999;
   background-color: black;
   color: white;
   opacity: 0.8;
-  position: fixed;
+  position: absolute;
+  display: none;
+  justify-content: center;
+  align-items: center;
+} */
+.loading--overlay {
+  width: 100%;
+  height: 100%;
+  position: fixed; /* Use fixed positioning to keep the overlay in place regardless of scrolling */
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  background-color: black;
+  color: white;
+  opacity: 0.8;
   display: none;
   justify-content: center;
   align-items: center;

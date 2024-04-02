@@ -15,9 +15,11 @@ const successStatus = document.getElementById("success--container");
 const failStatus = document.getElementById("fail--container");
 const loadingOverlay = document.querySelector(".loading--overlay");
 
+const hostname = window.location.hostname;
+
 //regex globals
 const namePattern =
-  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+(_[1-9]\.py|\.mp4)$/;
+  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+(?:_[A-Za-z]+)?_[1-9]\.(py|mp4)$/;
 
 let selectedFiles = [];
 
@@ -87,50 +89,6 @@ fileInput.addEventListener("change", () => {
   emptyError.style.display = "none";
   namingError.style.display = "none";
 
-  // for (let inputFile of files) {
-  //   // Add the file to the selectedFiles array
-
-  //   const li = document.createElement("li");
-  //   li.innerHTML = `
-  //   <p class="file--name">${inputFile.name}</p>
-  //   <button class="del--button" type="button">
-  //     <svg
-  //       data-slot="icon"
-  //       fill="none"
-  //       stroke-width="1.5"
-  //       stroke="currentColor"
-  //       viewBox="0 0 24 24"
-  //       xmlns="http://www.w3.org/2000/svg"
-  //       aria-hidden="true"
-  //     >
-  //       <path
-  //         stroke-linecap="round"
-  //         stroke-linejoin="round"
-  //         d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-  //       ></path>
-  //     </svg></button
-  //   >`;
-
-  //   switch (selectedFiles.length > 0) {
-  //     case true:
-  //       let fileExists = false;
-  //       selectedFiles.forEach((file) => {
-  //         if (file.name === inputFile.name) {
-  //           fileExists = true;
-  //         }
-  //       });
-  //       if (!fileExists) {
-  //         selectedFiles.push(inputFile);
-  //         filesList.appendChild(li);
-  //       }
-  //       break;
-  //     case false:
-  //       selectedFiles.push(inputFile);
-  //       filesList.appendChild(li);
-  //       break;
-  //     default:
-  //       break;
-  //   }
   for (let inputFile of files) {
     const fileIndex = selectedFiles.findIndex(
       (file) => file.name === inputFile.name
@@ -164,7 +122,7 @@ fileInput.addEventListener("change", () => {
       filesList.appendChild(li);
     }
   }
-  console.log(selectedFiles);
+
   let delButton = document.querySelectorAll(".del--button");
   delButton.forEach((button) => {
     button.addEventListener("click", () => {
@@ -193,8 +151,10 @@ form.addEventListener("submit", (e) => {
   e.preventDefault();
   const formData = new FormData();
   const form = e.currentTarget;
-  const submissionPath = form.action;
+  const submissionUrl = `http://${hostname}:3000/api/submit/`;
   let isValid = true;
+  let failedFiles = [];
+  namingError.style.display = "none";
 
   if (selectInput.value == "") {
     selectError.style.display = "block";
@@ -208,18 +168,40 @@ form.addEventListener("submit", (e) => {
   }
 
   if (selectedFiles.length > 0) {
-    selectedFiles.forEach((file) => {
-      if (!namePattern.test(file.name)) {
-        namingError.style.display = "block";
-        isValid = false;
-      }
-    });
+    failedFiles = selectedFiles
+      .filter((file) => !namePattern.test(file.name))
+      .map((file) => file.name);
+
+    if (failedFiles.length > 0) {
+      namingError.style.display = "block";
+      alert(
+        `Please Check the following files and name them properly:\n${failedFiles.join(
+          "\n"
+        )}\nThey are highlighted below`
+      );
+      isValid = false;
+    }
   }
+  // Accessing parent elements of list items
+  const listItems = filesList.querySelectorAll("li");
+  listItems.forEach((listItem) => {
+    const fileElement = listItem.querySelector(".file--name");
+    const fileButton = listItem.querySelector("button");
+    if (fileElement) {
+      const fileName = fileElement.textContent;
+      if (failedFiles.includes(fileName)) {
+        listItem.style.backgroundColor = "red";
+
+        fileElement.style.color = "white";
+        fileButton.style.color = "white";
+      }
+    }
+  });
 
   if (isValid) {
     selectedFiles.forEach((file, index) => {
       formData.append(`file`, file);
     });
-    submitFile(submissionPath, selectInput.value, formData);
+    submitFile(submissionUrl, selectInput.value, formData);
   }
 });

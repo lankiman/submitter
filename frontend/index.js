@@ -1,4 +1,5 @@
 "use Strict";
+
 //globals
 const form = document.querySelector("form");
 const fileInput = document.getElementById("file--input");
@@ -15,48 +16,14 @@ const successStatus = document.getElementById("success--container");
 const failStatus = document.getElementById("fail--container");
 const statusContainer = document.getElementById("status--container");
 const loadingOverlay = document.querySelector(".loading--overlay");
-
+const percentDetails = document.querySelector(".details--container");
+const progressBar = document.querySelector(".loading--progress");
 const hostname = window.location.hostname;
 
-//regex globals
 const namePattern =
   /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+(?:_[A-Za-z]+)?_[1-9]\.(py|mp4)$/;
 
 let selectedFiles = [];
-
-//generic submsion function
-
-const submitFile = async (url, dept, file) => {
-  loadingOverlay.style.display = "flex";
-  try {
-    const response = await fetch(url + `${dept}`, {
-      method: "POST",
-      body: file
-    });
-    const data = await response.json();
-    if (data) {
-      loadingOverlay.style.display = "none";
-      statusContainer.style.display = "flex";
-    }
-    if (data.error) {
-      failStatus.style.display = "flex";
-      failStatus.addEventListener("animationend", () => {
-        failStatus.style.display = "none";
-        statusContainer.style.display = "none";
-      });
-    } else {
-      successStatus.style.display = "flex";
-      form.reset();
-      filesList.replaceChildren();
-      selectedFiles.splice(0);
-
-      successStatus.addEventListener("animationend", () => {
-        successStatus.style.display = "none";
-        statusContainer.style.display = "none";
-      });
-    }
-  } catch (error) {}
-};
 
 //drag and drop functionality
 dragDrop.addEventListener("dragover", (e) => {
@@ -70,11 +37,10 @@ dragDrop.addEventListener("drop", (e) => {
     const fileType = file.type;
     if (fileType !== "text/x-python" && fileType !== "video/mp4") {
       alert("Only Python (.py) and MP4 files are allowed.");
-      return; // Stop further processing if an invalid file is found
+      return;
     }
   }
 
-  // Trigger the change event with valid files
   fileInput.files = e.dataTransfer.files;
   fileInput.dispatchEvent(new Event("change"));
 });
@@ -89,7 +55,6 @@ chooseFileIcon.addEventListener("click", () => {
 
 fileInput.addEventListener("change", () => {
   const files = fileInput.files;
-
   emptyError.style.display = "none";
   namingError.style.display = "none";
 
@@ -150,11 +115,61 @@ selectInput.addEventListener("change", () => {
   }
 });
 
+//loading status display function
+
+function failDisplay() {
+  loadingOverlay.style.display = "none";
+  statusContainer.style.display = "flex";
+  failStatus.style.display = "flex";
+  failStatus.addEventListener("animationend", () => {
+    failStatus.style.display = "none";
+    statusContainer.style.display = "none";
+  });
+}
+
+function successDisplay() {
+  loadingOverlay.style.display = "none";
+  statusContainer.style.display = "flex";
+  successStatus.style.display = "flex";
+  filesList.replaceChildren();
+  selectedFiles.splice(0);
+  form.reset();
+  successStatus.addEventListener("animationend", () => {
+    successStatus.style.display = "none";
+    statusContainer.style.display = "none";
+  });
+}
+
+// Axios Config
+const config = {
+  onUploadProgress: (progressEvent) => {
+    const percentCompleted = (progressEvent.loaded / progressEvent.total) * 100;
+    progressBar.setAttribute("value", percentCompleted);
+    percentDetails.firstChild.textContent = `uploading:${Math.round(
+      percentCompleted
+    )}%`;
+  }
+};
+//generic submsion function
+const submitFile = async (url, dept, file) => {
+  loadingOverlay.style.display = "flex";
+  try {
+    const response = await axios.post(url + `${dept}`, file, config);
+    console.log(response);
+    if (response.data.message != "upload successful") {
+      failDisplay();
+    } else {
+      successDisplay();
+    }
+  } catch (error) {
+    failDisplay();
+  }
+};
+
 //form submision and validation
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   const formData = new FormData();
-  const form = e.currentTarget;
   const submissionUrl = `http://${hostname}:3000/api/submit/`;
   let isValid = true;
   let failedFiles = [];
@@ -163,6 +178,8 @@ form.addEventListener("submit", (e) => {
   if (selectInput.value == "") {
     selectError.style.display = "block";
     selectInput.style.borderColor = "red";
+    alert("Please Choose a Department");
+    selectInput.scrollIntoView({ behavior: "smooth", block: "start" });
     isValid = false;
   }
 
@@ -203,7 +220,7 @@ form.addEventListener("submit", (e) => {
   });
 
   if (isValid) {
-    selectedFiles.forEach((file, index) => {
+    selectedFiles.forEach((file) => {
       formData.append(`file`, file);
     });
     submitFile(submissionUrl, selectInput.value, formData);

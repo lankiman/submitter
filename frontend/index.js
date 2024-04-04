@@ -18,6 +18,9 @@ const statusContainer = document.getElementById("status--container");
 const loadingOverlay = document.querySelector(".loading--overlay");
 const percentDetails = document.querySelector(".details--container");
 const progressBar = document.querySelector(".loading--progress");
+const uploadedFilesDetails = document.querySelector(
+  ".uploaded--details--container"
+);
 const hostname = window.location.hostname;
 
 const namePattern =
@@ -141,35 +144,92 @@ function successDisplay() {
 }
 
 // Axios Config
+
+let uploadedFiles = 0;
+let fileProgress = {};
+let currentSize = 0;
+let fileTracker = {};
+let totalFileSize = 0;
+
+//unit conversion funtions
+const sizeConverter = (size) => {
+  let units = ["bytes", "kb", "mb", "gb"];
+  let unitIndex = 0;
+
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex++;
+  }
+  return `${size.toFixed(2)} ${units[unitIndex]}`;
+};
+
 const config = {
-  onUploadProgress: (progressEvent) => {
-    const percentCompleted = (progressEvent.loaded / progressEvent.total) * 100;
+  onUploadProgress: function (progressEvent) {
+    fileProgress[fileTracker.name] =
+      (progressEvent.loaded * 100) / progressEvent.total;
+
+    currentSize = progressEvent.loaded;
+
+    let totalSize = sizeConverter(totalFileSize);
+    // sum up all file progress percentages to calculate the overall progress
+    const totalPercent = fileProgress
+      ? Object.values(fileProgress).reduce((sum, num) => sum + num, 0)
+      : 0;
+    // divide the total percentage by the number of files
+    let percentCompleted = parseInt(
+      Math.round(totalPercent / selectedFiles.length)
+    );
+
     progressBar.setAttribute("value", percentCompleted);
-    percentDetails.firstChild.textContent = `uploading:${Math.round(
+
+    percentDetails.firstChild.textContent = `${Math.round(
       percentCompleted
-    )}%`;
+    )}% uploaded`;
+
+    percentDetails.lastChild.textContent = `${sizeConverter(
+      progressEvent.rate || 0
+    )}/s`;
+
+    uploadedFilesDetails.firstChild.textContent = `${uploadedFiles} of ${selectedFiles.length} files uploaded`;
+
+    uploadedFilesDetails.children[1].textContent = `${sizeConverter(
+      currentSize
+    )} of ${totalSize} Uploaded`;
+
+    // uploadedFilesDetails.lastChild.textContent = `${Math.ceil(
+    //   progressEvent.estimated
+    // )} seconds remaning`;
   }
 };
 //generic submsion function
-const submitFile = async (url, dept, file) => {
+const submitFile = async (url, dept, files) => {
+  uploadedFiles = 0;
+  fileProgress = {};
+  currentSize = 0;
   loadingOverlay.style.display = "flex";
-  try {
-    const response = await axios.post(url + `${dept}`, file, config);
-    console.log(response);
-    if (response.data.message != "upload successful") {
+  const formData = new FormData();
+  totalFileSize = files.reduce((total, file) => total + file.size, 0);
+
+  for (let file of files) {
+    formData.append(`file`, file);
+    fileTracker = file;
+    try {
+      const response = await axios.post(url + `${dept}`, formData, config);
+      if (response.data.message == "upload successful") {
+        uploadedFiles++;
+      }
+    } catch (error) {
       failDisplay();
-    } else {
-      successDisplay();
     }
-  } catch (error) {
-    failDisplay();
+  }
+  if (uploadedFiles == files.length) {
+    successDisplay();
   }
 };
 
 //form submision and validation
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  const formData = new FormData();
   const submissionUrl = `http://${hostname}:3000/api/submit/`;
   let isValid = true;
   let failedFiles = [];
@@ -220,9 +280,9 @@ form.addEventListener("submit", (e) => {
   });
 
   if (isValid) {
-    selectedFiles.forEach((file) => {
-      formData.append(`file`, file);
-    });
-    submitFile(submissionUrl, selectInput.value, formData);
+    // selectedFiles.forEach((file) => {
+    //   formData.append(`file`, file);
+    // });
+    submitFile(submissionUrl, selectInput.value, selectedFiles);
   }
 });

@@ -21,12 +21,18 @@ const progressBar = document.querySelector(".loading--progress");
 const uploadedFilesDetails = document.querySelector(
   ".uploaded--details--container"
 );
+const submitedFilesList = document.querySelector(".uploaded--files--list");
+const cancelButton = document.querySelector(".cancel--submission");
+const failMessage = document.getElementById("fail--message");
+const highlighted = document.getElementById("highlighted");
+
 const hostname = window.location.hostname;
 
 const namePattern =
   /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+(?:_[A-Za-z]+)?_[1-9]\.(py|mp4)$/;
 
 let selectedFiles = [];
+let submittedFiles = [];
 
 //drag and drop functionality
 dragDrop.addEventListener("dragover", (e) => {
@@ -72,6 +78,7 @@ fileInput.addEventListener("change", () => {
       selectedFiles.push(inputFile);
 
       const li = document.createElement("li");
+      li.setAttribute("class", "selected--files");
       li.innerHTML = `
     <p class="file--name">${inputFile.name}</p>
     <button class="del--button" type="button">
@@ -103,6 +110,15 @@ fileInput.addEventListener("change", () => {
       const fileIndex = selectedFiles.findIndex(
         (file) => file.name === fileName
       );
+      const uploadFileIndex = submittedFiles.findIndex(
+        (name) => name == fileName
+      );
+      if (uploadFileIndex !== -1) {
+        submittedFiles.splice(fileIndex, 1);
+      }
+      if (submittedFiles.length == 0) {
+        highlighted.style.display = "none";
+      }
       if (fileIndex !== -1) {
         selectedFiles.splice(fileIndex, 1);
         listItem.remove();
@@ -127,6 +143,9 @@ function failDisplay() {
   failStatus.addEventListener("animationend", () => {
     failStatus.style.display = "none";
     statusContainer.style.display = "none";
+    if (highlighted.style.display == "block") {
+      highlighted.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   });
 }
 
@@ -143,13 +162,47 @@ function successDisplay() {
   });
 }
 
+//file status determine
+
+const fileStatus = (fileArray, status) => {
+  const listItems = filesList.querySelectorAll(".selected--files");
+  listItems.forEach((listItem) => {
+    const fileElement = listItem.querySelector(".file--name");
+    const fileButton = listItem.querySelector("button");
+    if (fileElement) {
+      const fileName = fileElement.textContent;
+      if (fileArray.includes(fileName)) {
+        if (status == "failed files") {
+          listItem.style.backgroundColor = "red";
+        } else {
+          highlighted.style.display = "block";
+          listItem.style.backgroundColor = "green";
+        }
+        fileElement.style.color = "white";
+        fileButton.style.color = "white";
+      }
+    }
+  });
+};
+
+const overlayUpdater = (fileName) => {
+  const li = document.createElement("li");
+  li.textContent = `${fileName}`;
+  submitedFilesList.appendChild(li);
+};
+
+const userOrNetworkCancellation = () => {
+  fileStatus(submittedFiles, "sucessful files");
+};
+
 // Axios Config
 
 let uploadedFiles = 0;
 let fileProgress = {};
-let currentSize = 0;
 let fileTracker = {};
 let totalFileSize = 0;
+let currentProgress = {};
+let controller;
 
 //unit conversion funtions
 const sizeConverter = (size) => {
@@ -163,52 +216,76 @@ const sizeConverter = (size) => {
   return `${size.toFixed(2)} ${units[unitIndex]}`;
 };
 
-const config = {
-  onUploadProgress: function (progressEvent) {
-    fileProgress[fileTracker.name] =
-      (progressEvent.loaded * 100) / progressEvent.total;
-
-    currentSize = progressEvent.loaded;
-
-    let totalSize = sizeConverter(totalFileSize);
-    // sum up all file progress percentages to calculate the overall progress
-    const totalPercent = fileProgress
-      ? Object.values(fileProgress).reduce((sum, num) => sum + num, 0)
-      : 0;
-    // divide the total percentage by the number of files
-    let percentCompleted = parseInt(
-      Math.round(totalPercent / selectedFiles.length)
-    );
-
-    progressBar.setAttribute("value", percentCompleted);
-
-    percentDetails.firstChild.textContent = `${Math.round(
-      percentCompleted
-    )}% uploaded`;
-
-    percentDetails.lastChild.textContent = `${sizeConverter(
-      progressEvent.rate || 0
-    )}/s`;
-
-    uploadedFilesDetails.firstChild.textContent = `${uploadedFiles} of ${selectedFiles.length} files uploaded`;
-
-    uploadedFilesDetails.children[1].textContent = `${sizeConverter(
-      currentSize
-    )} of ${totalSize} Uploaded`;
-
-    // uploadedFilesDetails.lastChild.textContent = `${Math.ceil(
-    //   progressEvent.estimated
-    // )} seconds remaning`;
+cancelButton.addEventListener("click", () => {
+  if (controller) {
+    controller.abort();
+    failMessage.textContent = "Submission Cancelled";
   }
+});
+const getConfig = () => {
+  return {
+    signal: controller.signal,
+    onUploadProgress: function (progressEvent) {
+      fileProgress[fileTracker.name] =
+        (progressEvent.loaded * 100) / progressEvent.total;
+
+      currentProgress = progressEvent.loaded;
+
+      if ((progressEvent.evebt, lengthComputable)) {
+        currentProgress += progressEvent.loaded;
+      }
+      console.log(progressEvent);
+
+      let totalSize = sizeConverter(totalFileSize);
+      // sum up all file progress percentages to calculate the overall progress
+      const totalPercent = fileProgress
+        ? Object.values(fileProgress).reduce((sum, num) => sum + num, 0)
+        : 0;
+
+      // const totalProgres = currentProgress
+      //   ? Object.values(currentProgress).reduce((sum, num) => sum + num, 0)
+      //   : 0;
+      // divide the total percentage by the number of files
+      let percentCompleted = parseInt(
+        Math.round(totalPercent / selectedFiles.length)
+      );
+
+      console.log(sizeConverter(progressEvent.loaded));
+      console.log(sizeConverter(progressEvent.total));
+
+      progressBar.setAttribute("value", percentCompleted);
+
+      percentDetails.firstChild.textContent = `${Math.round(
+        percentCompleted
+      )}% uploaded`;
+
+      percentDetails.lastChild.textContent = `${sizeConverter(
+        progressEvent.rate || 0
+      )}/s`;
+
+      uploadedFilesDetails.firstChild.textContent = `${uploadedFiles} of ${selectedFiles.length} files uploaded`;
+
+      uploadedFilesDetails.children[1].textContent = `${sizeConverter(
+        currentProgress
+      )} of ${totalSize} Uploaded`;
+    }
+  };
 };
+
 //generic submsion function
 const submitFile = async (url, dept, files) => {
   uploadedFiles = 0;
+  currentProgress = 0;
+  fileTracker = {};
   fileProgress = {};
-  currentSize = 0;
+  submittedFiles = [];
+  submitedFilesList.replaceChildren();
   loadingOverlay.style.display = "flex";
   const formData = new FormData();
   totalFileSize = files.reduce((total, file) => total + file.size, 0);
+  failMessage.textContent = "Unable to Submit";
+  controller = new AbortController();
+  const config = getConfig();
 
   for (let file of files) {
     formData.append(`file`, file);
@@ -217,9 +294,23 @@ const submitFile = async (url, dept, files) => {
       const response = await axios.post(url + `${dept}`, formData, config);
       if (response.data.message == "upload successful") {
         uploadedFiles++;
+        submittedFiles.push(file.name);
+        overlayUpdater(file.name);
       }
     } catch (error) {
+      if (axios.isCancel(error)) {
+        userOrNetworkCancellation();
+      }
+      if (error.code === "ECONNABORTED") {
+        // timeout handling
+        console.log(error);
+      }
+      if (error.code == "ERR_NETWORK") {
+        failMessage.textContent = "Network Error";
+        controller.abort();
+      }
       failDisplay();
+      userOrNetworkCancellation();
     }
   }
   if (uploadedFiles == files.length) {
@@ -263,26 +354,16 @@ form.addEventListener("submit", (e) => {
       isValid = false;
     }
   }
-  // Accessing parent elements of list items
-  const listItems = filesList.querySelectorAll("li");
-  listItems.forEach((listItem) => {
-    const fileElement = listItem.querySelector(".file--name");
-    const fileButton = listItem.querySelector("button");
-    if (fileElement) {
-      const fileName = fileElement.textContent;
-      if (failedFiles.includes(fileName)) {
-        listItem.style.backgroundColor = "red";
 
-        fileElement.style.color = "white";
-        fileButton.style.color = "white";
-      }
-    }
-  });
+  fileStatus(failedFiles, "failed files");
 
   if (isValid) {
     // selectedFiles.forEach((file) => {
     //   formData.append(`file`, file);
     // });
+    alert(
+      "please keep track of the files as they are being submited in case of any network interuptions"
+    );
     submitFile(submissionUrl, selectInput.value, selectedFiles);
   }
 });

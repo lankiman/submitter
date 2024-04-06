@@ -82,6 +82,10 @@
           <p class="error" id="naming--error">
             Some Files are Named incorrectly
           </p>
+          <p class="highlighted" id="highlighted">
+            The highlighted Files were sucessfully uploaded, Remove them and Try
+            again
+          </p>
           <p class="error" id="empty--error">
             File list Empty, Plese choose files to upload
           </p>
@@ -134,13 +138,31 @@
                 d="M15.182 16.318A4.486 4.486 0 0 0 12.016 15a4.486 4.486 0 0 0-3.198 1.318M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"
               ></path>
             </svg>
-            <p>Unable to Submit</p>
+            <p id="fail--message">Unable to Submit</p>
           </div>
           <div class="line"></div>
         </div>
       </div>
     </main>
     <div class="loading--overlay">
+      <button class="cancel--submission">
+        <svg
+          id="delete--svg"
+          data-slot="icon"
+          fill="none"
+          stroke-width="1.5"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18 18 6M6 6l12 12"
+          ></path>
+        </svg>
+      </button>
       <div class="loading--progress--container">
         <div class="details--container">
           <p></p>
@@ -155,6 +177,14 @@
       </div>
       <div class="loading--animation">
         <span class="loading_inner--animation"></span>
+      </div>
+      <div class="uploaded_files--container">
+        <p>uploaded files</p>
+        <ul
+          type="none"
+          id="uploaded--files--list"
+          class="uploaded--files--list"
+        ></ul>
       </div>
     </div>
     <script defer type="module" src="./index.js"></script>

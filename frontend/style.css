@@ -178,6 +178,13 @@ h5 {
   font-weight: bold;
   padding: 2px;
 }
+.highlighted {
+  display: none;
+  color: green;
+  font-size: small;
+  font-weight: bold;
+  padding: 2px;
+}
 .status--container {
   position: absolute;
   width: 30rem;
@@ -284,6 +291,25 @@ h5 {
   width: 100%;
   background-color: #fff;
   animation: loader-inner 2s infinite ease-in;
+}
+
+.uploaded_files--container {
+  font-size: small;
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+  padding: 1rem;
+  gap: 10px;
+}
+
+.cancel--submission {
+  width: 2.5rem;
+  color: white;
+  font-weight: bolder;
+  background: none;
+  border: none;
+  position: absolute;
+  top: 18%;
 }
 
 @keyframes loader-outer {

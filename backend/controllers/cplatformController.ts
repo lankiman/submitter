@@ -12,7 +12,7 @@ const namePattern =
 
 const validExtensions = [".c", ".mp4", ".h"];
 
-const storage = storageHelper(folderPath);
+const storage = storageHelper(folderPath, false);
 
 const upload = uploadHelper(storage, validExtensions, "c", namePattern);
 

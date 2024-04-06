@@ -294,10 +294,9 @@ h5 {
 }
 
 .uploaded_files--container {
-  font-size: small;
+  font-size: medium;
   display: flex;
   flex-direction: column;
-  align-self: flex-start;
   padding: 1rem;
   gap: 10px;
 }

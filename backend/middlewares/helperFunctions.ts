@@ -2,10 +2,15 @@ import { NextFunction, Request, Response } from "express";
 import multer from "multer";
 import path from "path";
 
-const storageHelper = (folderPath: string) => {
+const storageHelper = (folderPath: string, dept: boolean) => {
   const storage = multer.diskStorage({
     destination: function (req: Request, file, cb) {
-      cb(null, `${folderPath}`);
+      if (dept) {
+        const { dept } = req.params;
+        cb(null, `${folderPath}/${dept}`);
+      } else {
+        cb(null, `${folderPath}`);
+      }
     },
     filename: function (req: Request, file, cb) {
       cb(null, file.originalname);

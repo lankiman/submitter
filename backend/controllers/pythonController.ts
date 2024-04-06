@@ -12,7 +12,7 @@ const namePattern =
 
 const validExtensions = [".py", ".mp4"];
 
-const storage = storageHelper(folderPath);
+const storage = storageHelper(folderPath, true);
 
 const upload = uploadHelper(storage, validExtensions, "python", namePattern);
 

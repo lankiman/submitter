@@ -3,14 +3,13 @@ import { NextFunction, Request, Response } from "express";
 import multer from "multer";
 import path from "path";
 
-const folderPath: string = "../../submissions/";
+const folderPath: string = "../../cSubmissions/";
 const namePattern =
-  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+(?:_[A-Za-z]+)?_[1-9]\.(py|mp4)$/;
+  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+(?:_[A-Za-z]+)?_[1-9]\.(c|mp4|h)$/;
 
 const storage = multer.diskStorage({
   destination: function (req: Request, file, cb) {
-    const { dept } = req.params;
-    cb(null, `${folderPath}/${dept}`);
+    cb(null, `${folderPath}`);
   },
   filename: function (req: Request, file, cb) {
     cb(null, file.originalname);
@@ -26,19 +25,22 @@ const upload = multer({
     cb: multer.FileFilterCallback
   ) => {
     const fileExtension = path.extname(file.originalname).toLowerCase();
-    const validExtensions = [".py", ".mp4"];
+    const validExtensions = [".c", ".h", ".mp4"];
     if (!validExtensions.includes(fileExtension)) {
       return cb(
         new Error(
-          "Only text or video files with .py or .mp4 extensions are allowed"
+          "Only text or video files with .c, .h or .mp4 extensions are allowed"
         )
       );
     }
     switch (fileExtension) {
-      case ".py":
+      case ".c":
         console.log(file.mimetype);
         break;
       case ".mp4":
+        console.log(file.mimetype);
+        break;
+      case ".h":
         console.log(file.mimetype);
         break;
       default:
@@ -53,7 +55,7 @@ const upload = multer({
   }
 });
 
-const handleFileUpload = (req: Request, res: Response, next: NextFunction) => {
+const handleFileUploadC = (req: Request, res: Response, next: NextFunction) => {
   upload.array("file")(req, res, (err: multer.MulterError | any) => {
     if (err instanceof multer.MulterError) {
       return res.status(400).json({ error: "File upload failed." });
@@ -64,7 +66,7 @@ const handleFileUpload = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-const validateUploadStatus = (req: Request, res: Response) => {
+const validateUploadStatusC = (req: Request, res: Response) => {
   if (!req.files) {
     return res
       .status(400)
@@ -74,4 +76,4 @@ const validateUploadStatus = (req: Request, res: Response) => {
   res.status(200).json({ message: "upload successful", body: req.files });
 };
 
-export { handleFileUpload, validateUploadStatus };
+export { handleFileUploadC, validateUploadStatusC };

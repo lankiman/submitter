@@ -201,7 +201,8 @@ let uploadedFiles = 0;
 let fileProgress = {};
 let fileTracker = {};
 let totalFileSize = 0;
-let currentProgress = {};
+let currentProgress = 0;
+
 let controller;
 
 //unit conversion funtions
@@ -216,25 +217,37 @@ const sizeConverter = (size) => {
   return `${size.toFixed(2)} ${units[unitIndex]}`;
 };
 
+const timeConverter = (time) => {
+  let minutes = Math.ceil(time / 60);
+  let hours = Math.ceil(time / 3600);
+  let remSeconds = time % 60;
+  let remMinutes = minutes % 60;
+
+  if (time >= 60 && minutes < 60) {
+    return `${minutes} minutes ${Math.ceil(remSeconds)} seconds`;
+  } else if (minutes >= 60) {
+    return `${hours} hours ${Math.ceil(remMinutes)} minutes ${Math.ceil(
+      remSeconds
+    )}`;
+  } else if (time < 60) {
+    return `${Math.ceil(time)} seconds`;
+  }
+};
+
 cancelButton.addEventListener("click", () => {
   if (controller) {
     controller.abort();
     failMessage.textContent = "Submission Cancelled";
   }
 });
+
 const getConfig = () => {
   return {
     signal: controller.signal,
+    // timeout: 600000,
     onUploadProgress: function (progressEvent) {
       fileProgress[fileTracker.name] =
         (progressEvent.loaded * 100) / progressEvent.total;
-
-      currentProgress = progressEvent.loaded;
-
-      if ((progressEvent.evebt, lengthComputable)) {
-        currentProgress += progressEvent.loaded;
-      }
-      console.log(progressEvent);
 
       let totalSize = sizeConverter(totalFileSize);
       // sum up all file progress percentages to calculate the overall progress
@@ -242,16 +255,15 @@ const getConfig = () => {
         ? Object.values(fileProgress).reduce((sum, num) => sum + num, 0)
         : 0;
 
-      // const totalProgres = currentProgress
-      //   ? Object.values(currentProgress).reduce((sum, num) => sum + num, 0)
-      //   : 0;
       // divide the total percentage by the number of files
       let percentCompleted = parseInt(
         Math.round(totalPercent / selectedFiles.length)
       );
+      currentProgress = Math.round((percentCompleted / 100) * totalFileSize);
 
-      console.log(sizeConverter(progressEvent.loaded));
-      console.log(sizeConverter(progressEvent.total));
+      let remainingData = totalFileSize - currentProgress;
+
+      let remainingTime = remainingData / progressEvent.rate || 0;
 
       progressBar.setAttribute("value", percentCompleted);
 
@@ -266,26 +278,45 @@ const getConfig = () => {
       uploadedFilesDetails.firstChild.textContent = `${uploadedFiles} of ${selectedFiles.length} files uploaded`;
 
       uploadedFilesDetails.children[1].textContent = `${sizeConverter(
-        currentProgress
+        currentProgress || 0
       )} of ${totalSize} Uploaded`;
+
+      uploadedFilesDetails.lastChild.textContent = `${timeConverter(
+        remainingTime
+      )} remaning`;
     }
   };
 };
 
-//generic submsion function
-const submitFile = async (url, dept, files) => {
+const clearValues = () => {
   uploadedFiles = 0;
-  currentProgress = 0;
   fileTracker = {};
   fileProgress = {};
   submittedFiles = [];
+  currentProgress = 0;
+  progressBar.setAttribute("value", 0);
   submitedFilesList.replaceChildren();
-  loadingOverlay.style.display = "flex";
-  const formData = new FormData();
-  totalFileSize = files.reduce((total, file) => total + file.size, 0);
+
   failMessage.textContent = "Unable to Submit";
+
+  percentDetails.lastChild.textContent = "";
+
+  uploadedFilesDetails.firstChild.textContent = "";
+
+  uploadedFilesDetails.children[1].textContent = "";
+
+  uploadedFilesDetails.lastChild.textContent = "";
+};
+
+//generic submsion function
+const submitFile = async (url, dept, files) => {
+  clearValues();
+  loadingOverlay.style.display = "flex";
+  totalFileSize = files.reduce((total, file) => total + file.size, 0);
   controller = new AbortController();
   const config = getConfig();
+
+  const formData = new FormData();
 
   for (let file of files) {
     formData.append(`file`, file);
@@ -302,8 +333,7 @@ const submitFile = async (url, dept, files) => {
         userOrNetworkCancellation();
       }
       if (error.code === "ECONNABORTED") {
-        // timeout handling
-        console.log(error);
+        failMessage.textContent = "Network Timeout";
       }
       if (error.code == "ERR_NETWORK") {
         failMessage.textContent = "Network Error";
@@ -358,11 +388,8 @@ form.addEventListener("submit", (e) => {
   fileStatus(failedFiles, "failed files");
 
   if (isValid) {
-    // selectedFiles.forEach((file) => {
-    //   formData.append(`file`, file);
-    // });
     alert(
-      "please keep track of the files as they are being submited in case of any network interuptions"
+      "Please keep track of the Files that are sucessfully uploaded during this process in case of any Network Interuptions"
     );
     submitFile(submissionUrl, selectInput.value, selectedFiles);
   }

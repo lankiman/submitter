@@ -1,10 +1,8 @@
 import express from "express";
-import router from "./submit";
+import pythonRouter from "./routes/python";
 import cors from "cors";
-import {
-  handleFileUploadC,
-  validateUploadStatusC
-} from "./cplatformController";
+import cRouter from "./routes/c";
+
 const app = express();
 
 app.use(express.json());
@@ -21,9 +19,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/submit", router);
+app.use("/api/submit/python", pythonRouter);
 
-app.post("/api/cplatform", handleFileUploadC, validateUploadStatusC);
+app.use("/api/submit/c", cRouter);
 
 app.listen(3000, () => {
   console.log("server active");

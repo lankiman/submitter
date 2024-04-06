@@ -1,7 +1,8 @@
 //drag and drop functionality
 import * as global from "../utils/global.js";
 
-const namePattern = global.namePattern;
+const namePattern =
+  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+(?:_[A-Za-z]+)?_[1-9]\.(py|mp4)$/;
 
 global.dragDrop.addEventListener("drop", (e) => {
   e.preventDefault();
@@ -70,7 +71,7 @@ const submitFile = async (url, dept, files) => {
 //form submision and validation
 global.form.addEventListener("submit", (e) => {
   e.preventDefault();
-  const submissionUrl = `http://${global.hostname}:3000/api/submit/`;
+  const submissionUrl = `http://${global.hostname}:3000/api/submit/python/`;
   let isValid = true;
   let failedFiles = [];
   global.namingError.style.display = "none";
@@ -96,7 +97,7 @@ global.form.addEventListener("submit", (e) => {
       .map((file) => file.name);
 
     if (failedFiles.length > 0) {
-      namingError.style.display = "block";
+      global.namingError.style.display = "block";
       alert(
         `Please Check the following files and name them properly:\n${failedFiles.join(
           "\n"

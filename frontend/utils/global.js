@@ -27,9 +27,6 @@ const highlighted = document.getElementById("highlighted");
 
 const hostname = window.location.hostname;
 
-const namePattern =
-  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+(?:_[A-Za-z]+)?_[1-9]\.(py|mp4)$/;
-
 let selectedFiles = [];
 let submittedFiles = [];
 
@@ -321,7 +318,6 @@ export {
   failMessage,
   highlighted,
   hostname,
-  namePattern,
   selectedFiles,
   submittedFiles,
   dragDrop,

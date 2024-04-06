@@ -1,5 +1,4 @@
 "use Strict";
-
 //globals
 const form = document.querySelector("form");
 const fileInput = document.getElementById("file--input");
@@ -34,24 +33,8 @@ const namePattern =
 let selectedFiles = [];
 let submittedFiles = [];
 
-//drag and drop functionality
 dragDrop.addEventListener("dragover", (e) => {
   e.preventDefault();
-});
-
-dragDrop.addEventListener("drop", (e) => {
-  e.preventDefault();
-
-  for (let file of e.dataTransfer.files) {
-    const fileType = file.type;
-    if (fileType !== "text/x-python" && fileType !== "video/mp4") {
-      alert("Only Python (.py) and MP4 files are allowed.");
-      return;
-    }
-  }
-
-  fileInput.files = e.dataTransfer.files;
-  fileInput.dispatchEvent(new Event("change"));
 });
 
 //custom input functionality
@@ -80,24 +63,24 @@ fileInput.addEventListener("change", () => {
       const li = document.createElement("li");
       li.setAttribute("class", "selected--files");
       li.innerHTML = `
-    <p class="file--name">${inputFile.name}</p>
-    <button class="del--button" type="button">
-      <svg
-        data-slot="icon"
-        fill="none"
-        stroke-width="1.5"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-        ></path>
-      </svg></button
-    >`;
+      <p class="file--name">${inputFile.name}</p>
+      <button class="del--button" type="button">
+        <svg
+          data-slot="icon"
+          fill="none"
+          stroke-width="1.5"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+          ></path>
+        </svg></button
+      >`;
       filesList.appendChild(li);
     }
   }
@@ -125,13 +108,6 @@ fileInput.addEventListener("change", () => {
       }
     });
   });
-});
-
-selectInput.addEventListener("change", () => {
-  if (selectInput.value != "") {
-    selectError.style.display = "none";
-    selectInput.style.borderColor = "initial";
-  }
 });
 
 //loading status display function
@@ -205,7 +181,21 @@ let currentProgress = 0;
 
 let controller;
 
-//unit conversion funtions
+function setTotalFileSize(size) {
+  totalFileSize = size;
+}
+
+function setControler(control) {
+  controller = control;
+}
+
+function setFileTracker(tracker) {
+  fileTracker = tracker;
+}
+function setUploadedFiles(uploaded) {
+  uploadedFiles = uploaded;
+}
+//unit conversion funtions{}
 const sizeConverter = (size) => {
   let units = ["bytes", "kb", "mb", "gb"];
   let unitIndex = 0;
@@ -243,7 +233,7 @@ cancelButton.addEventListener("click", () => {
 
 const getConfig = () => {
   return {
-    signal: controller.signal,
+    signal: controller ? controller.signal : null,
     // timeout: 600000,
     onUploadProgress: function (progressEvent) {
       fileProgress[fileTracker.name] =
@@ -308,89 +298,50 @@ const clearValues = () => {
   uploadedFilesDetails.lastChild.textContent = "";
 };
 
-//generic submsion function
-const submitFile = async (url, dept, files) => {
-  clearValues();
-  loadingOverlay.style.display = "flex";
-  totalFileSize = files.reduce((total, file) => total + file.size, 0);
-  controller = new AbortController();
-  const config = getConfig();
-
-  const formData = new FormData();
-
-  for (let file of files) {
-    formData.append(`file`, file);
-    fileTracker = file;
-    try {
-      const response = await axios.post(url + `${dept}`, formData, config);
-      if (response.data.message == "upload successful") {
-        uploadedFiles++;
-        submittedFiles.push(file.name);
-        overlayUpdater(file.name);
-      }
-    } catch (error) {
-      if (axios.isCancel(error)) {
-        userOrNetworkCancellation();
-      }
-      if (error.code === "ECONNABORTED") {
-        failMessage.textContent = "Network Timeout";
-      }
-      if (error.code == "ERR_NETWORK") {
-        failMessage.textContent = "Network Error";
-        controller.abort();
-      }
-      failDisplay();
-      userOrNetworkCancellation();
-    }
-  }
-  if (uploadedFiles == files.length) {
-    successDisplay();
-  }
+export {
+  form,
+  fileInput,
+  selectInput,
+  selectError,
+  namingError,
+  emptyError,
+  chooseFileButton,
+  chooseFileIcon,
+  filesList,
+  errorList,
+  successStatus,
+  failStatus,
+  statusContainer,
+  loadingOverlay,
+  percentDetails,
+  progressBar,
+  uploadedFilesDetails,
+  submitedFilesList,
+  cancelButton,
+  failMessage,
+  highlighted,
+  hostname,
+  namePattern,
+  selectedFiles,
+  submittedFiles,
+  dragDrop,
+  failDisplay,
+  successDisplay,
+  fileStatus,
+  overlayUpdater,
+  userOrNetworkCancellation,
+  uploadedFiles,
+  fileProgress,
+  fileTracker,
+  totalFileSize,
+  currentProgress,
+  controller,
+  sizeConverter,
+  timeConverter,
+  getConfig,
+  clearValues,
+  setTotalFileSize,
+  setControler,
+  setFileTracker,
+  setUploadedFiles
 };
-
-//form submision and validation
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const submissionUrl = `http://${hostname}:3000/api/submit/`;
-  let isValid = true;
-  let failedFiles = [];
-  namingError.style.display = "none";
-
-  if (selectInput.value == "") {
-    selectError.style.display = "block";
-    selectInput.style.borderColor = "red";
-    alert("Please Choose a Department");
-    selectInput.scrollIntoView({ behavior: "smooth", block: "start" });
-    isValid = false;
-  }
-
-  if (selectedFiles.length == 0) {
-    emptyError.style.display = "block";
-    isValid = false;
-  }
-
-  if (selectedFiles.length > 0) {
-    failedFiles = selectedFiles
-      .filter((file) => !namePattern.test(file.name))
-      .map((file) => file.name);
-
-    if (failedFiles.length > 0) {
-      namingError.style.display = "block";
-      alert(
-        `Please Check the following files and name them properly:\n${failedFiles.join(
-          "\n"
-        )}\nThey are highlighted below`
-      );
-      isValid = false;
-    }
-  }
-
-  fileStatus(failedFiles, "failed files");
-
-  if (isValid) {
-    alert(
-      "Please keep track of the Files that are sucessfully uploaded during this process in case of any Network Interuptions"
-    );
-    submitFile(submissionUrl, selectInput.value, selectedFiles);
-  }
-});

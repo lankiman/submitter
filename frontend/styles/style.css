@@ -22,6 +22,7 @@ main {
   height: 100svh;
   padding-bottom: 2rem;
   padding-top: 2rem;
+  z-index: -1;
 }
 
 h1 {
@@ -246,18 +247,18 @@ h5 {
 .loading--overlay {
   width: 100%;
   height: 100%;
-  position: fixed; /* Use fixed positioning to keep the overlay in place regardless of scrolling */
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 9999;
   background-color: black;
   color: white;
-  opacity: 0.8;
+  opacity: 0.9;
   display: none;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   gap: 2rem;
+  overflow: auto;
 }
 .loading--progress--container {
   max-width: 70%;
@@ -295,10 +296,15 @@ h5 {
 
 .uploaded_files--container {
   font-size: medium;
-  display: flex;
+  text-align: center;
+  max-width: 85%;
+  display: none;
   flex-direction: column;
   padding: 1rem;
   gap: 10px;
+}
+.uploaded_files--container p {
+  text-align: center;
 }
 
 .cancel--submission {
@@ -307,8 +313,8 @@ h5 {
   font-weight: bolder;
   background: none;
   border: none;
-  position: absolute;
-  top: 18%;
+  margin-top: 9rem;
+  margin-bottom: 1rem;
 }
 
 @keyframes loader-outer {
@@ -381,5 +387,11 @@ h5 {
     width: 18rem;
     margin-top: 1rem;
     padding: 0;
+  }
+  .uploaded_files--container {
+    text-align: left;
+  }
+  .cancel--submission {
+    margin-top: 4rem;
   }
 }

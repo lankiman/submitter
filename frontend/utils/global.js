@@ -24,6 +24,10 @@ const submitedFilesList = document.querySelector(".uploaded--files--list");
 const cancelButton = document.querySelector(".cancel--submission");
 const failMessage = document.getElementById("fail--message");
 const highlighted = document.getElementById("highlighted");
+const uploadedContainer = document.querySelector(".uploaded_files--container");
+const progressContainer = document.querySelector(
+  ".loading--progress--container"
+);
 
 const hostname = window.location.hostname;
 
@@ -236,6 +240,10 @@ const getConfig = () => {
       fileProgress[fileTracker.name] =
         (progressEvent.loaded * 100) / progressEvent.total;
 
+      if (uploadedFiles > 0) {
+        uploadedContainer.style.display = "flex";
+      }
+
       let totalSize = sizeConverter(totalFileSize);
       // sum up all file progress percentages to calculate the overall progress
       const totalPercent = fileProgress
@@ -287,12 +295,15 @@ const clearValues = () => {
   failMessage.textContent = "Unable to Submit";
 
   percentDetails.lastChild.textContent = "";
+  percentDetails.firstChild.textContent = "";
 
   uploadedFilesDetails.firstChild.textContent = "";
 
   uploadedFilesDetails.children[1].textContent = "";
 
   uploadedFilesDetails.lastChild.textContent = "";
+
+  uploadedContainer.style.display = "none";
 };
 
 export {
@@ -339,5 +350,6 @@ export {
   setTotalFileSize,
   setControler,
   setFileTracker,
-  setUploadedFiles
+  setUploadedFiles,
+  uploadedContainer
 };

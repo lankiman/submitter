@@ -109,6 +109,7 @@ global.form.addEventListener("submit", (e) => {
         )}\nThey are highlighted below`
       );
       isValid = false;
+      global.setFailedNameFiles(failedFiles);
     }
     if (oversizedFiles.length > 0) {
       global.highlightedSize.style.display = "block";

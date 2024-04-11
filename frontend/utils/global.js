@@ -32,6 +32,7 @@ const hostname = window.location.hostname;
 let selectedFiles = [];
 let submittedFiles = [];
 let wrongSizeFiles = [];
+let failedNames = [];
 
 dragDrop.addEventListener("dragover", (e) => {
   e.preventDefault();
@@ -82,6 +83,7 @@ fileInput.addEventListener("change", () => {
         </svg></button
       >`;
       filesList.appendChild(li);
+      fileInput.value = "";
     }
   }
 
@@ -99,6 +101,13 @@ fileInput.addEventListener("change", () => {
       const wrongSizeIndex = wrongSizeFiles.findIndex(
         (name) => name == fileName
       );
+      const failedNameIndex = failedNames.findIndex((name) => name == fileName);
+      if (failedNameIndex !== -1) {
+        failedNames.splice(failedNameIndex, 1);
+      }
+      if (failedNames.length == 0) {
+        namingError.style.display = "none";
+      }
       if (uploadFileIndex !== -1) {
         submittedFiles.splice(uploadFileIndex, 1);
       }
@@ -115,6 +124,7 @@ fileInput.addEventListener("change", () => {
         selectedFiles.splice(fileIndex, 1);
         listItem.remove();
       }
+      console.log(failedNames, failedNameIndex);
     });
   });
 });
@@ -211,6 +221,9 @@ function setUploadedFiles(uploaded) {
 }
 function setWrongSizeFiles(files) {
   wrongSizeFiles = files;
+}
+function setFailedNameFiles(files) {
+  failedNames = files;
 }
 //unit conversion funtions{}
 const sizeConverter = (size) => {
@@ -369,5 +382,6 @@ export {
   setUploadedFiles,
   uploadedContainer,
   highlightedSize,
-  setWrongSizeFiles
+  setWrongSizeFiles,
+  setFailedNameFiles
 };

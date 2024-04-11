@@ -7,7 +7,6 @@
 
 body {
   background: #274886;
-  overflow: auto;
 }
 
 main {
@@ -22,7 +21,6 @@ main {
   height: 100svh;
   padding-bottom: 2rem;
   padding-top: 2rem;
-  z-index: -1;
 }
 
 h1 {
@@ -35,14 +33,6 @@ h1 {
 h4 {
   padding-bottom: 1rem;
   text-align: center;
-}
-
-hr {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  border-left: none;
-  border-right: none;
-  border-top: none;
 }
 
 .upload--container {
@@ -186,6 +176,13 @@ h5 {
   font-weight: bold;
   padding: 2px;
 }
+.highlightedSize {
+  display: none;
+  color: blue;
+  font-size: small;
+  font-weight: bold;
+  padding: 2px;
+}
 .status--container {
   position: absolute;
   width: 30rem;
@@ -247,10 +244,10 @@ h5 {
 .loading--overlay {
   width: 100%;
   height: 100%;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
-  z-index: 9999;
+  z-index: 99;
   background-color: black;
   color: white;
   opacity: 0.9;
@@ -263,7 +260,7 @@ h5 {
 .loading--progress--container {
   max-width: 70%;
   width: 25rem;
-  padding: 1rem;
+  padding: 5rem;
 }
 .details--container {
   display: flex;

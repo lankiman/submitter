@@ -27,7 +27,9 @@ const uploadHelper = (
 ) => {
   const upload = multer({
     storage: storage,
-
+    limits: {
+      fileSize: 104860000
+    },
     fileFilter: (
       req: Request,
       file: Express.Multer.File,

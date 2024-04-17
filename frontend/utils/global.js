@@ -24,15 +24,15 @@ const submitedFilesList = document.querySelector(".uploaded--files--list");
 const cancelButton = document.querySelector(".cancel--submission");
 const failMessage = document.getElementById("fail--message");
 const highlighted = document.getElementById("highlighted");
+const highlightedSize = document.getElementById("highlightedSize");
 const uploadedContainer = document.querySelector(".uploaded_files--container");
-const progressContainer = document.querySelector(
-  ".loading--progress--container"
-);
 
 const hostname = window.location.hostname;
 
 let selectedFiles = [];
 let submittedFiles = [];
+let wrongSizeFiles = [];
+let failedNames = [];
 
 dragDrop.addEventListener("dragover", (e) => {
   e.preventDefault();
@@ -83,6 +83,7 @@ fileInput.addEventListener("change", () => {
         </svg></button
       >`;
       filesList.appendChild(li);
+      fileInput.value = "";
     }
   }
 
@@ -97,16 +98,33 @@ fileInput.addEventListener("change", () => {
       const uploadFileIndex = submittedFiles.findIndex(
         (name) => name == fileName
       );
+      const wrongSizeIndex = wrongSizeFiles.findIndex(
+        (name) => name == fileName
+      );
+      const failedNameIndex = failedNames.findIndex((name) => name == fileName);
+      if (failedNameIndex !== -1) {
+        failedNames.splice(failedNameIndex, 1);
+      }
+      if (failedNames.length == 0) {
+        namingError.style.display = "none";
+      }
       if (uploadFileIndex !== -1) {
-        submittedFiles.splice(fileIndex, 1);
+        submittedFiles.splice(uploadFileIndex, 1);
       }
       if (submittedFiles.length == 0) {
         highlighted.style.display = "none";
+      }
+      if (wrongSizeIndex !== -1) {
+        wrongSizeFiles.splice(wrongSizeIndex, 1);
+      }
+      if (wrongSizeFiles.length == 0) {
+        highlightedSize.style.display = "none";
       }
       if (fileIndex !== -1) {
         selectedFiles.splice(fileIndex, 1);
         listItem.remove();
       }
+      console.log(failedNames, failedNameIndex);
     });
   });
 });
@@ -151,9 +169,14 @@ const fileStatus = (fileArray, status) => {
       if (fileArray.includes(fileName)) {
         if (status == "failed files") {
           listItem.style.backgroundColor = "red";
-        } else {
+        }
+        if (status == "sucessful files") {
           highlighted.style.display = "block";
           listItem.style.backgroundColor = "green";
+        }
+        if (status == "wrong size") {
+          highlightedSize.style.display = "block";
+          listItem.style.backgroundColor = "blue";
         }
         fileElement.style.color = "white";
         fileButton.style.color = "white";
@@ -195,6 +218,12 @@ function setFileTracker(tracker) {
 }
 function setUploadedFiles(uploaded) {
   uploadedFiles = uploaded;
+}
+function setWrongSizeFiles(files) {
+  wrongSizeFiles = files;
+}
+function setFailedNameFiles(files) {
+  failedNames = files;
 }
 //unit conversion funtions{}
 const sizeConverter = (size) => {
@@ -351,5 +380,8 @@ export {
   setControler,
   setFileTracker,
   setUploadedFiles,
-  uploadedContainer
+  uploadedContainer,
+  highlightedSize,
+  setWrongSizeFiles,
+  setFailedNameFiles
 };

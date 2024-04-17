@@ -74,6 +74,7 @@ global.form.addEventListener("submit", (e) => {
   const submissionUrl = `http://${global.hostname}:3000/api/submit/python/`;
   let isValid = true;
   let failedFiles = [];
+  let oversizedFiles = [];
   global.namingError.style.display = "none";
 
   if (global.selectInput) {
@@ -96,6 +97,10 @@ global.form.addEventListener("submit", (e) => {
       .filter((file) => !namePattern.test(file.name))
       .map((file) => file.name);
 
+    oversizedFiles = global.selectedFiles
+      .filter((file) => file.size > 104860000)
+      .map((file) => file.name);
+
     if (failedFiles.length > 0) {
       global.namingError.style.display = "block";
       alert(
@@ -104,10 +109,22 @@ global.form.addEventListener("submit", (e) => {
         )}\nThey are highlighted below`
       );
       isValid = false;
+      global.setFailedNameFiles(failedFiles);
+    }
+    if (oversizedFiles.length > 0) {
+      global.highlightedSize.style.display = "block";
+      alert(
+        `The following files exceed the specified file limit of 100mb\n${oversizedFiles.join(
+          "\n"
+        )}\nThey are highlighted below`
+      );
+      isValid = false;
+      global.setWrongSizeFiles(oversizedFiles);
     }
   }
 
   global.fileStatus(failedFiles, "failed files");
+  global.fileStatus(oversizedFiles, "wrong size");
 
   if (isValid) {
     alert(

@@ -36,14 +36,6 @@ h4 {
   text-align: center;
 }
 
-hr {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  border-left: none;
-  border-right: none;
-  border-top: none;
-}
-
 .upload--container {
   background-color: white;
   width: fit-content;
@@ -185,6 +177,13 @@ h5 {
   font-weight: bold;
   padding: 2px;
 }
+.highlightedSize {
+  display: none;
+  color: blue;
+  font-size: small;
+  font-weight: bold;
+  padding: 2px;
+}
 .status--container {
   position: absolute;
   width: 30rem;
@@ -244,25 +243,25 @@ h5 {
 }
 
 .loading--overlay {
-  width: 100%;
   height: 100%;
-  position: fixed;
+  width: 100%;
+  position: absolute;
   top: 0;
   left: 0;
-  z-index: 9999;
+  z-index: 99;
   background-color: black;
   color: white;
   opacity: 0.9;
   display: none;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
   overflow: auto;
 }
 .loading--progress--container {
-  max-width: 70%;
+  max-width: 100%;
   width: 25rem;
-  padding: 1rem;
+  padding: 5rem;
 }
 .details--container {
   display: flex;
@@ -281,7 +280,6 @@ h5 {
   width: 3rem;
   height: 3rem;
   border: 4px solid #fff;
-  top: 50%;
   animation: loader-outer 2s infinite ease;
 }
 
@@ -296,7 +294,7 @@ h5 {
 .uploaded_files--container {
   font-size: medium;
   text-align: center;
-  max-width: 85%;
+  max-width: 90%;
   display: none;
   flex-direction: column;
   padding: 1rem;
@@ -313,7 +311,7 @@ h5 {
   background: none;
   border: none;
   margin-top: 9rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 @keyframes loader-outer {

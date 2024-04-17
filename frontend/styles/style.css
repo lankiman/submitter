@@ -22,7 +22,6 @@ main {
   height: 100svh;
   padding-bottom: 2rem;
   padding-top: 2rem;
-  z-index: -1;
 }
 
 h1 {

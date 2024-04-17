@@ -89,7 +89,7 @@ global.form.addEventListener("submit", (e) => {
       .map((file) => file.name);
 
     if (failedFiles.length > 0) {
-      namingError.style.display = "block";
+      global.namingError.style.display = "block";
       alert(
         `Please Check the following files and name them properly:\n${failedFiles.join(
           "\n"

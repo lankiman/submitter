@@ -2,7 +2,9 @@
 import * as global from "../utils/global.js";
 
 const namePattern =
-  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+(?:_[A-Za-z]+)?_[1-5]\.(c|h|mp4)$/;
+  /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2})|(\d{8}[A-Za-z]{2}))_[A-Za-z][a-z]*(-[A-Za-z][a-z]*)*_[A-Za-z][a-z]*(?:_[A-Za-z][a-z]*)?_[1-5]\.(c|h|mp4)$/;
+
+// /^((UG-\d{2}-\d{4})|(\d{12}[A-Za-z]{2}))_[A-Za-z]+_[A-Za-z]+(?:_[A-Za-z]+)?_[1-5]\.(c|h|mp4)$/;
 
 global.dragDrop.addEventListener("drop", (e) => {
   e.preventDefault();
@@ -69,6 +71,7 @@ global.form.addEventListener("submit", (e) => {
   const submissionUrl = `http://${global.hostname}:3000/api/submit/c`;
   let isValid = true;
   let failedFiles = [];
+  let oversizedFiles = [];
   global.namingError.style.display = "none";
 
   if (global.selectedFiles.length == 0) {
@@ -81,6 +84,10 @@ global.form.addEventListener("submit", (e) => {
       .filter((file) => !namePattern.test(file.name))
       .map((file) => file.name);
 
+    oversizedFiles = global.selectedFiles
+      .filter((file) => file.size > 104860000)
+      .map((file) => file.name);
+
     if (failedFiles.length > 0) {
       namingError.style.display = "block";
       alert(
@@ -91,8 +98,19 @@ global.form.addEventListener("submit", (e) => {
       isValid = false;
     }
   }
+  if (oversizedFiles.length > 0) {
+    global.highlightedSize.style.display = "block";
+    alert(
+      `The following files exceed the specified file limit of 100mb\n${oversizedFiles.join(
+        "\n"
+      )}\nThey are highlighted below`
+    );
+    isValid = false;
+    global.setWrongSizeFiles(oversizedFiles);
+  }
 
   global.fileStatus(failedFiles, "failed files");
+  global.fileStatus(oversizedFiles, "wrong size");
 
   if (isValid) {
     alert(

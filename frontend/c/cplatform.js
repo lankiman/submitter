@@ -68,6 +68,7 @@ const submitFile = async (url, files) => {
 //form submision and validation
 global.form.addEventListener("submit", (e) => {
   e.preventDefault();
+  global.clearValues();
   const submissionUrl = `http://${global.hostname}:3000/api/submit/c`;
   let isValid = true;
   let failedFiles = [];

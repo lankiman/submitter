@@ -1,0 +1,195 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #bbbbbc;
+  overflow: auto;
+}
+
+button {
+  cursor: pointer;
+}
+
+.container {
+  width: 100%;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  gap: 1rem;
+  overflow: auto;
+}
+h1 {
+  color: #072251;
+  font-weight: bolder;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.download--resources--btn {
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 2px solid white;
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.download--resources--btn:hover {
+  background-color: white;
+  color: black;
+  border-color: black;
+}
+.download--resources--btn svg {
+  width: 2rem;
+}
+.submit--script--container {
+  margin-top: 1rem;
+  max-width: 90%;
+}
+h2 {
+  color: #072251;
+  font-weight: bolder;
+  font-size: 1.2rem;
+}
+
+form {
+  margin-top: 1rem;
+}
+.file--input {
+  display: none;
+}
+.choose--file--btn {
+  padding: 1rem 0.5rem 1rem 0.5rem;
+  border: solid 2px white;
+  background-color: black;
+  border-radius: 1rem;
+  color: white;
+  font-weight: bolder;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.choose--file--btn:hover {
+  background-color: white;
+  color: black;
+  border-color: black;
+}
+.choose--file--btn svg {
+  width: 1.5rem;
+}
+h3 {
+  color: #072251;
+  margin: 0.5rem 0rem 0.5rem 0rem;
+}
+.file--section {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  word-break: break-all;
+}
+.file--del--btn {
+  background: none;
+  border: none;
+}
+.file--del--btn svg {
+  width: 1.5rem;
+  stroke: #072251;
+}
+.file--del--btn svg:hover {
+  stroke: red;
+}
+.submit--exam--btn {
+  padding: 1rem 0.5rem 1rem 0.5rem;
+  border: solid 2px white;
+  background-color: black;
+  border-radius: 1rem;
+  color: white;
+  font-weight: bolder;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.submit--exam--btn:hover {
+  background-color: white;
+  color: black;
+  border-color: black;
+}
+.submit--exam--btn svg {
+  width: 1.5rem;
+}
+.naming--error {
+  display: none;
+  color: red;
+  font-weight: bolder;
+  margin: 1rem 0rem 1rem 0rem;
+}
+.naming--instructions--container {
+  margin: 1rem 0rem 1rem 0rem;
+}
+h5 {
+  margin-bottom: 0.5rem;
+}
+.format--text {
+  color: #072251;
+}
+.instructions--text {
+  color: red;
+  margin-top: 1rem;
+}
+ul {
+  list-style: none;
+  font-size: small;
+  color: #072251;
+}
+a {
+  text-decoration: none;
+}
+.submission--status {
+  color: green;
+  font-weight: bolder;
+  margin-top: 1rem;
+  display: none;
+}
+.submit--btn--container {
+  display: none;
+  margin-top: 1rem;
+  align-items: center;
+  gap: 10px;
+}
+.spinner {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
+  border-top: 3px solid blue;
+  display: none;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media screen and (min-width: 650px) {
+  .container {
+    justify-content: center;
+    align-items: center;
+  }
+  .download--resources--container {
+    width: 22rem;
+  }
+}

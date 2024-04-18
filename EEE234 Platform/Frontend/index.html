@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="shortcut icon" href="./file-type-c.svg" type="image/x-icon" />
+    <title>EEE234 (C) Platform</title>
+  </head>
+  <body>
+    <main class="container">
+      <h1>Welcome EEE 234 Exam Platform</h1>
+      <div class="download--resources--container">
+        <a href="./resource/EEE234 Que.pdf" download="EEE234 Que.pdf"
+          ><button
+            id="download--resources--btn"
+            class="download--resources--btn"
+          >
+            <span>Download Question Paper</span
+            ><svg
+              data-slot="icon"
+              aria-hidden="true"
+              fill="none"
+              stroke-width="1.5"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+          </button>
+        </a>
+        <a
+          href="./resource/C Programming - Note (EEE 231 to 234).pdf"
+          download="C Programming - Note (EEE 231 to 234).pdf"
+          ><button
+            id="download--resources--btn"
+            class="download--resources--btn"
+          >
+            <span>Download Lecture Note</span
+            ><svg
+              data-slot="icon"
+              aria-hidden="true"
+              fill="none"
+              stroke-width="1.5"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+          </button>
+        </a>
+      </div>
+      <div class="submit--script--container">
+        <h2>Submit Exam Source File Here</h2>
+        <div
+          id="naming--instructions--container"
+          class="naming--instructions--container"
+        >
+          <h5>File Naming Format instructions are as follows:</h5>
+          <p class="format--text">UG-00-1111_John_Doe_Ice.c</p>
+          <p class="format--text">UG-00-1111_John_Doe.c</p>
+          <p class="format--text">11112222AA_John_Doe_Ice.c</p>
+          <p class="format--text">11112222AA_John_Doe.c</p>
+
+          <p class="instructions--text">*Note</p>
+
+          <ul>
+            <li>The first Letter of each name must be Capital</li>
+            <li>The subesequent letters must be smaller case</li>
+            <li>File extenstion must be .c</li>
+            <li>If any of your names contains hyphens(-), you can use them</li>
+            <li>
+              If you have more than Three names, Discard the least imporant one
+            </li>
+          </ul>
+        </div>
+
+        <form
+          enctype="multipart/form-data"
+          class="submit--script--form"
+          id="submit--script--form"
+          action="#"
+          method="post"
+        >
+          <input
+            class="file--input"
+            id="file--input"
+            type="file"
+            name="file"
+            accept=".c"
+          />
+          <button
+            type="button"
+            class="choose--file--btn"
+            id="choose--file--btn"
+          >
+            <span>Choose Source File</span>
+            <svg
+              data-slot="icon"
+              aria-hidden="true"
+              fill="none"
+              stroke-width="1.5"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+          </button>
+          <div class="choosen-sourcefile-container">
+            <h3>Source File</h3>
+            <section id="file--section" class="file--section"></section>
+          </div>
+
+          <p class="naming--error" id="naming--error">
+            Your source file is named incorrectly, Please Refer to the Naming
+            instructions
+          </p>
+
+          <div id="submit--btn--container" class="submit--btn--container">
+            <button
+              type="submit"
+              class="submit--exam--btn"
+              id="submit--exam--btn"
+            >
+              <span>Submit Exam</span>
+              <svg
+                data-slot="icon"
+                aria-hidden="true"
+                fill="none"
+                stroke-width="1.5"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m6.75 12-3-3m0 0-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+              </svg>
+            </button>
+            <div id="spinner" class="spinner"></div>
+          </div>
+        </form>
+        <p id="submission--status" class="submission--status"></p>
+      </div>
+    </main>
+    <script defer type="module" src="./script.js"></script>
+  </body>
+</html>
